@@ -33,15 +33,13 @@ class Helper:
 
     """
 
-    def __init__(self, image, angle, size, mean, std):
+    def __init__(self, image, size, mean, std):
         """Short summary.
 
         Parameters
         ----------
         image : type
             Description of parameter `image`.
-        angle : type
-            Description of parameter `angle`.
         size : type
             Description of parameter `size`.
         mean : type
@@ -56,7 +54,6 @@ class Helper:
 
         """
         self.image = image
-        self.angle = angle
         self.size = size
         self.mean = mean
         self.std = std
@@ -72,10 +69,10 @@ class Helper:
         """
         h, w = self.image.shape[:2]
         img_c = (w / 2, h / 2)
+        angle = random.randrange(30)
+        rot = cv2.getRotationMatrix2D(img_c, angle, 1)
 
-        rot = cv2.getRotationMatrix2D(img_c, self.angle, 1)
-
-        rad = math.radians(self.angle)
+        rad = math.radians(angle)
         sin = math.sin(rad)
         cos = math.cos(rad)
         b_w = int((h * abs(sin)) + (w * abs(cos)))
@@ -109,7 +106,7 @@ class Helper:
             The flipped array.
 
         """
-        if (random.random() > 50):
+        if (random.random() > 0.5):
             flipped = np.flipud(self.image)
         return flipped
 
