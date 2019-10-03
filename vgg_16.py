@@ -1,4 +1,4 @@
-"""Build the VGG16 architecture."""
+"""Build the VGG16 model."""
 import inspect
 import os
 import time
@@ -9,7 +9,7 @@ import tensorflow as tf
 VGG_MEAN = [103.939, 116.779, 123.68]
 
 
-class Vgg16:
+class VGG16:
     """VGG16 CNN.
 
     Parameters
