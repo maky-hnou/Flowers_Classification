@@ -10,46 +10,45 @@ VGG_MEAN = [103.939, 116.779, 123.68]
 
 
 class VGG16:
-    """VGG16 CNN.
+    """Build the VGG16 model.
 
     Parameters
     ----------
-    vgg16_npy_path : type
-        Description of parameter `vgg16_npy_path`.
+    vgg16_npy_path : str
+        Where pretrained model is stored.
 
     Attributes
     ----------
-    data_dict : type
-        Description of attribute `data_dict`.
+    data_dict : numpy ndarray
+        Where weights of pretrained VGG16 model will be stored.
 
     """
 
     def __init__(self, vgg16_npy_path=None):
-        """Short summary.
+        """__init__ Constructor.
 
         Parameters
         ----------
-        vgg16_npy_path : type
-            Description of parameter `vgg16_npy_path`.
+        vgg16_npy_path : str
+            The path of  the pretrained model.
 
         Returns
         -------
-        type
-            Description of returned object.
+        None
 
         """
         if (vgg16_npy_path is None):
-            path = inspect.getfile(Vgg16)
+            path = inspect.getfile(VGG16)
             path = os.path.abspath(os.path.join(path, os.pardir))
             path = os.path.join(path, "vgg16.npy")
             vgg16_npy_path = path
             print(path)
 
         self.data_dict = np.load(vgg16_npy_path, encoding='latin1').item()
-        print("npy file loaded")
+        print("wheights loaded from the pretrained model")
 
     def build(self, bgr):
-        """Load variable from npy to build the VGG.
+        """Build the model layers.
 
         Parameters
         ----------
@@ -58,70 +57,57 @@ class VGG16:
 
         Returns
         -------
-        type
-            Description of returned object.
+        None
 
         """
         start_time = time.time()
-        print("build model started")
+        print("building model started")
 
         assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
+
         # ___Layer 1___
         # Build Convolution layer + Relu and load weights
         self.conv1_1 = self.conv_layer(bgr, "conv1_1")
-
         # Build Convolution layer + Relu and load weights
         self.conv1_2 = self.conv_layer(self.conv1_1, "conv1_2")
-
         # Build Max Pooling layer
         self.pool1 = self.max_pool(self.conv1_2, 'pool1')
 
         # ___Layer 2___
         # Build Convolution layer + Relu and load weights
         self.conv2_1 = self.conv_layer(self.pool1, "conv2_1")
-
         # Build Convolution layer + Relu and load weights
         self.conv2_2 = self.conv_layer(self.conv2_1, "conv2_2")
-
         # Build Max Pooling layer
         self.pool2 = self.max_pool(self.conv2_2, 'pool2')
 
         # ___Layer 3___
         # Build Convolution layer + Relu and load weights
         self.conv3_1 = self.conv_layer(self.pool2, "conv3_1")
-
         # Build Convolution layer + Relu and load weights
         self.conv3_2 = self.conv_layer(self.conv3_1, "conv3_2")
-
         # Build Convolution layer + Relu and load weights
         self.conv3_3 = self.conv_layer(self.conv3_2, "conv3_3")
-
         # Build Max Pooling layer
         self.pool3 = self.max_pool(self.conv3_3, 'pool3')
 
         # ___Layer 4___
         # Build Convolution layer + Relu and load weights
         self.conv4_1 = self.conv_layer(self.pool3, "conv4_1")
-
         # Build Convolution layer + Relu and load weights
         self.conv4_2 = self.conv_layer(self.conv4_1, "conv4_2")
-
         # Build Convolution layer + Relu and load weights
         self.conv4_3 = self.conv_layer(self.conv4_2, "conv4_3")
-
         # Build Max Pooling layer
         self.pool4 = self.max_pool(self.conv4_3, 'pool4')
 
         # ___Layer 5___
         # Build Convolution layer + Relu and load weights
         self.conv5_1 = self.conv_layer(self.pool4, "conv5_1")
-
         # Build Convolution layer + Relu and load weights
         self.conv5_2 = self.conv_layer(self.conv5_1, "conv5_2")
-
         # Build Convolution layer + Relu and load weights
         self.conv5_3 = self.conv_layer(self.conv5_2, "conv5_3")
-
         # Build Max Pooling layer
         self.pool5 = self.max_pool(self.conv5_3, 'pool5')
 
@@ -141,22 +127,22 @@ class VGG16:
         self.prob = tf.nn.softmax(self.fc8, name="prob")
 
         self.data_dict = None
-        print(("build model finished: %ds" % (time.time() - start_time)))
+        print(('build model finished in:', (time.time() - start_time)))
 
     def avg_pool(self, bottom, name):
-        """Short summary.
+        """Perform the average pooling on the input.
 
         Parameters
         ----------
-        bottom : type
-            Description of parameter `bottom`.
-        name : type
-            Description of parameter `name`.
+        bottom : numpy ndarray
+            The input data.
+        name : str
+            Optional name for the operation.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            The average pooled output tensor.
 
         """
         return tf.nn.avg_pool(bottom, ksize=[1, 2, 2, 1],
@@ -164,38 +150,38 @@ class VGG16:
                               name=name)
 
     def max_pool(self, bottom, name):
-        """Short summary.
+        """Perform the max pooling on the input.
 
         Parameters
         ----------
-        bottom : type
-            Description of parameter `bottom`.
-        name : type
-            Description of parameter `name`.
+        bottom : numpy ndarray
+            The input data.
+        name : str
+            Optional name for the operation.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            The max pooled output tensor.
 
         """
         return tf.nn.max_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1],
                               padding='SAME', name=name)
 
     def conv_layer(self, bottom, name):
-        """Short summary.
+        """Create the Convolutional layer.
 
         Parameters
         ----------
-        bottom : type
-            Description of parameter `bottom`.
-        name : type
-            Description of parameter `name`.
+        bottom : numpy ndarray
+            The input data.
+        name : str
+            Optional name for the operation.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            The output tensor of the rectified linear.
 
         """
         with tf.variable_scope(name):
@@ -210,19 +196,19 @@ class VGG16:
             return relu
 
     def fc_layer(self, bottom, name):
-        """Short summary.
+        """Create the fully connected layer.
 
         Parameters
         ----------
-        bottom : type
-            Description of parameter `bottom`.
-        name : type
-            Description of parameter `name`.
+        bottom : numpy ndarray
+            The input data.
+        name : str
+            Optional name for the operation.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            The result of summing the biases with the values.
 
         """
         with tf.variable_scope(name):
@@ -242,49 +228,49 @@ class VGG16:
             return fc
 
     def get_conv_filter(self, name):
-        """Short summary.
+        """Create the convolution filter.
 
         Parameters
         ----------
-        name : type
-            Description of parameter `name`.
+        name : str
+             Optional name for the tensor.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            A Constant Tensor, the filter.
 
         """
         return tf.constant(self.data_dict[name][0], name="filter")
 
     def get_bias(self, name):
-        """Short summary.
+        """Create the bias tensor.
 
         Parameters
         ----------
-        name : type
-            Description of parameter `name`.
+        name : str
+             Optional name for the tensor.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            A Constant Tensor, the bias ndarray.
 
         """
         return tf.constant(self.data_dict[name][1], name="biases")
 
     def get_fc_weight(self, name):
-        """Short summary.
+        """Create the fully connected layer weights.
 
         Parameters
         ----------
-        name : type
-            Description of parameter `name`.
+        name : str
+             Optional name for the tensor.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            A Constant Tensor, the weights ndarray.
 
         """
         return tf.constant(self.data_dict[name][0], name="weights")
