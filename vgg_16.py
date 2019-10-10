@@ -1,4 +1,5 @@
 """Build the VGG16 model."""
+
 import inspect
 import os
 import time
