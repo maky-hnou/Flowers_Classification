@@ -8,94 +8,81 @@ import numpy as np
 
 
 class Helper:
-    """Short summary.
+    """Helper class.
 
     Parameters
     ----------
-    image : type
-        Description of parameter `image`.
-    angle : type
-        Description of parameter `angle`.
-    size : type
-        Description of parameter `size`.
-    mean : type
-        Description of parameter `mean`.
-    std : type
-        Description of parameter `std`.
+    image : numpy ndarray
+        The input image.
 
     Attributes
     ----------
-    image
-    angle
-    size
-    mean
-    std
+    size : tuple
+        The new size of the image.
+    mean : list
+        The list of means.
+    std : type
+        The list of standard deviations.
 
     """
 
-    def __init__(self, image, size, mean, std):
-        """Short summary.
+    def __init__(self, image):
+        """__init__ Constructor.
 
         Parameters
         ----------
-        image : type
-            Description of parameter `image`.
-        size : type
-            Description of parameter `size`.
-        mean : type
-            Description of parameter `mean`.
-        std : type
-            Description of parameter `std`.
+        image : numpy ndarray
+            The input image.
 
         Returns
         -------
-        type
-            Description of returned object.
+        None
 
         """
         self.image = image
-        self.size = size
-        self.mean = mean
-        self.std = std
+        self.size = (224, 224)
+        self.mean = [0.485, 0.456, 0.406]
+        self.std = [0.229, 0.224, 0.225]
 
     def random_rotation(self):
-        """Short summary.
+        """Apply random rotation to an input image.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            The rotated image.
 
         """
-        h, w = self.image.shape[:2]
-        img_c = (w / 2, h / 2)
+        height, width = self.image.shape[:2]
+        img_dims = (width / 2, height / 2)
         angle = random.randrange(30)
-        rot = cv2.getRotationMatrix2D(img_c, angle, 1)
+        rotated_img = cv2.getRotationMatrix2D(img_dims, angle, 1)
 
         rad = math.radians(angle)
         sin = math.sin(rad)
         cos = math.cos(rad)
-        b_w = int((h * abs(sin)) + (w * abs(cos)))
-        b_h = int((h * abs(cos)) + (w * abs(sin)))
+        b_w = int((height * abs(sin)) + (width * abs(cos)))
+        b_h = int((height * abs(cos)) + (width * abs(sin)))
 
-        rot[0, 2] += ((b_w / 2) - img_c[0])
-        rot[1, 2] += ((b_h / 2) - img_c[1])
+        rotated_img[0, 2] += ((b_w / 2) - img_dims[0])
+        rotated_img[1, 2] += ((b_h / 2) - img_dims[1])
 
-        outImg = cv2.warpAffine(
-            self.image, rot, (b_w, b_h), flags=cv2.INTER_LINEAR)
-        return outImg
+        out_img = cv2.warpAffine(
+            self.image, rotated_img, (b_w, b_h), flags=cv2.INTER_LINEAR)
+        return out_img
 
     def random_resized_crop(self):
-        """Short summary.
+        """Resize an inpu image.
 
         Returns
         -------
-        type
-            Description of returned object.
+        numpy ndarray
+            The resized image.
 
         """
-        resized = cv2.resize(self.image, self.size)
-        return resized
+        rotated_img = self.random_rotation()
+        resized_img = cv2.resize(rotated_img, self.size)
+        return resized_img
 
     def random_horizontal_flip(self):
         """Flip an input array.
@@ -103,12 +90,15 @@ class Helper:
         Returns
         -------
         numpy ndarray
-            The flipped array.
+            The flipped array (image).
 
         """
+        resized_img = self.random_resized_crop()
         if (random.random() > 0.5):
-            flipped = np.flipud(self.image)
-        return flipped
+            flipped_img = np.flipud(self.image)
+            return flipped_img
+        else:
+            return resized_img
 
     def normalize(self):
         """Normalize an input array.
@@ -119,6 +109,7 @@ class Helper:
             The normalized array.
 
         """
-        normalized = self.image - self.mean
-        normalized = normalized / self.std
-        return normalized
+        flipped_img = self.random_horizontal_flip()
+        normalized_img = flipped_img - self.mean
+        normalized_img = normalized_img / self.std
+        return normalized_img.astype(np.uint8)
