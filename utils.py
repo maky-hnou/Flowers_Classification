@@ -1,6 +1,8 @@
 """Utils functions."""
 
+import glob
 import math
+import os
 import random
 
 import cv2
@@ -76,3 +78,49 @@ def normalize(image, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
     normalized_img = image - mean
     normalized_img = normalized_img / std
     return normalized_img.astype(np.uint8)
+
+
+def rename_files(path):
+    """Rename files in subdirectores of a given parent directory.
+
+    Parameters
+    ----------
+    path : str
+        The parent directory path.
+
+    Returns
+    -------
+    None
+
+    """
+    for folder in glob.glob(path):
+        i = 1
+        for img in glob.glob(folder + '/*'):
+            path_parts = img.split('/')
+            class_folder_path = path_parts[:-1]
+            class_number = path_parts[-2]
+            os.rename(img, '/'.join(class_folder_path)
+                      + '/{}_{}.jpg'.format(class_number, i))
+            i += 1
+
+
+def label_images(filename, path):
+    """Return the label of a given image existing a given directory.
+
+    Parameters
+    ----------
+    filename : str
+        The filename path.
+    path : str
+        The directory path.
+
+    Returns
+    -------
+    list
+        The label of the given image.
+
+    """
+    classes_number = len(glob.glob(path + '/*'))
+    class_labels = np.identity(classes_number, dtype=int)
+    class_label = filename.split('_')[0]
+    return list(class_labels[int(class_label) - 1])
