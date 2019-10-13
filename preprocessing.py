@@ -3,32 +3,29 @@
 import glob
 
 import cv2
-from helper import random_horizontal_flip, random_resized_crop, random_rotation
 from natsort import natsorted, ns
+from utils import (image_to_npy, random_horizontal_flip, random_resized_crop,
+                   random_rotation, rename_files)
 
+if (__name__ == '__main__'):
+    data_folders = ['flower_data/train/',
+                    'flower_data/test/', 'flower_data/valid/']
+    for folder in data_folders:
+        for image in natsorted(glob.glob(folder + '**/*'),
+                               alg=ns.IGNORECASE):
+            try:
+                print(image)
+                img = cv2.imread(image)
+                rotated_img = random_rotation(img)
+                resized_img = random_resized_crop(rotated_img)
+                flipped_img = random_horizontal_flip(resized_img)
+                cv2.imwrite(image, flipped_img)
+            except Exception as e:
+                print(e)
+                continue
 
-def preprocess_img(image_path):
-    """Apply preprocessing techniques on input image.
+        # Rename data/files
+        rename_files(folder)
 
-    Parameters
-    ----------
-    image_path : str
-        The path of the image to be processed.
-
-    Returns
-    -------
-    None
-
-    """
-    img = cv2.imread(image_path)
-    rotated_img = random_rotation(img)
-    resized_img = random_resized_crop(rotated_img)
-    flipped_img = random_horizontal_flip(resized_img)
-    cv2.imwrite(image_path, flipped_img)
-
-
-for img in natsorted(glob.glob('flower_data/train/**/*'), alg=ns.IGNORECASE):
-    try:
-        preprocess_img(img)
-    except AttributeError:
-        continue
+        # Convert data/files to numpy array
+        image_to_npy(folder.split('/')[-2], folder, (224, 224))
