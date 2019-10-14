@@ -5,7 +5,7 @@ import glob
 import cv2
 from natsort import natsorted, ns
 from utils import (image_to_npy, random_horizontal_flip, random_resized_crop,
-                   random_rotation, rename_files)
+                   random_rotation, rename_files, rename_folders)
 
 if (__name__ == '__main__'):
     data_folders = ['flower_data/train/',
@@ -14,7 +14,6 @@ if (__name__ == '__main__'):
         for image in natsorted(glob.glob(folder + '**/*'),
                                alg=ns.IGNORECASE):
             try:
-                print(image)
                 img = cv2.imread(image)
                 rotated_img = random_rotation(img)
                 resized_img = random_resized_crop(rotated_img)
@@ -24,8 +23,11 @@ if (__name__ == '__main__'):
                 print(e)
                 continue
 
+        # Rename folders
+        rename_folders(folder, 'cat_to_name.json')
         # Rename data/files
         rename_files(folder)
 
         # Convert data/files to numpy array
-        image_to_npy(folder.split('/')[-2], folder, (224, 224))
+        image_to_npy(folder.split('/')[-2], folder,
+                     (224, 224), 'cat_to_name.json')
