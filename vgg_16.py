@@ -1,277 +1,163 @@
-"""Build the VGG16 model."""
-
-import inspect
-import os
+"""Build the VGG16 CNN."""
 import time
 
-import numpy as np
-import tensorflow as tf
-
-VGG_MEAN = [103.939, 116.779, 123.68]
+import TensorFlow as tf
 
 
 class VGG16:
-    """Build the VGG16 model.
+    def __init__(self, input_shape, num_classes=102, isTraining=False,
+                 keep_prob=1.0, return_all=False):
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+        self.isTraining = isTraining
+        self.keep_prob = keep_prob
+        self.return_all = return_all
 
-    Parameters
-    ----------
-    vgg16_npy_path : str
-        Where pretrained model is stored.
-
-    Attributes
-    ----------
-    data_dict : numpy ndarray
-        Where weights of pretrained VGG16 model will be stored.
-
-    """
-
-    def __init__(self, vgg16_npy_path=None):
-        """__init__ Constructor.
-
-        Parameters
-        ----------
-        vgg16_npy_path : str
-            The path of  the pretrained model.
-
-        Returns
-        -------
-        None
-
-        """
-        if (vgg16_npy_path is None):
-            path = inspect.getfile(VGG16)
-            path = os.path.abspath(os.path.join(path, os.pardir))
-            path = os.path.join(path, "vgg16.npy")
-            vgg16_npy_path = path
-            print(path)
-
-        self.data_dict = np.load(vgg16_npy_path, encoding='latin1').item()
-        print("wheights loaded from the pretrained model")
-
-    def build(self, bgr):
-        """Build the model layers.
-
-        Parameters
-        ----------
-        rgb : numpy ndarray
-            image [batch, height, width, 3] values scaled [0, 1].
-
-        Returns
-        -------
-        None
-
-        """
+    def build_model(self):
         start_time = time.time()
         print("building model started")
 
-        assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
-
         # ___Layer 1___
         # Build Convolution layer + Relu and load weights
-        self.conv1_1 = self.conv_layer(bgr, "conv1_1")
+        output1_1, kernel1_1, bias1_1 = self.convolution_layer(
+            'conv1_1', self.input_shape, 64)
         # Build Convolution layer + Relu and load weights
-        self.conv1_2 = self.conv_layer(self.conv1_1, "conv1_2")
+        output1_2, kernel1_2, bias1_2 = self.convolution_layer(
+            'conv1_2', output1_1, 64)
         # Build Max Pooling layer
-        self.pool1 = self.max_pool(self.conv1_2, 'pool1')
+        output1_3 = self.max_pooling_layer('pool1', output1_2)
 
         # ___Layer 2___
-        # Build Convolution layer + Relu and load weights
-        self.conv2_1 = self.conv_layer(self.pool1, "conv2_1")
-        # Build Convolution layer + Relu and load weights
-        self.conv2_2 = self.conv_layer(self.conv2_1, "conv2_2")
-        # Build Max Pooling layer
-        self.pool2 = self.max_pool(self.conv2_2, 'pool2')
+        output2_1, kernel2_1, bias2_1 = self.convolution_layer(
+            'conv2_1', output1_3, 128)
+        output2_2, kernel2_2, bias2_2 = self.convolution_layer(
+            'conv2_2', output2_1, 128)
+        output2_3 = self.max_pooling_layer('pool2', output2_2)
 
         # ___Layer 3___
-        # Build Convolution layer + Relu and load weights
-        self.conv3_1 = self.conv_layer(self.pool2, "conv3_1")
-        # Build Convolution layer + Relu and load weights
-        self.conv3_2 = self.conv_layer(self.conv3_1, "conv3_2")
-        # Build Convolution layer + Relu and load weights
-        self.conv3_3 = self.conv_layer(self.conv3_2, "conv3_3")
-        # Build Max Pooling layer
-        self.pool3 = self.max_pool(self.conv3_3, 'pool3')
+        output3_1, kernel3_1, bias3_1 = self.convolution_layer(
+            'conv3_1', output2_3, 256)
+        output3_2, kernel3_2, bias3_2 = self.convolution_layer(
+            'conv3_2', output3_1, 256)
+        output3_3, kernel3_3, bias3_3 = self.convolution_layer(
+            'conv3_3', output3_2, 256)
+        output3_4 = self.max_pooling_layer('pool3', output3_3)
 
         # ___Layer 4___
-        # Build Convolution layer + Relu and load weights
-        self.conv4_1 = self.conv_layer(self.pool3, "conv4_1")
-        # Build Convolution layer + Relu and load weights
-        self.conv4_2 = self.conv_layer(self.conv4_1, "conv4_2")
-        # Build Convolution layer + Relu and load weights
-        self.conv4_3 = self.conv_layer(self.conv4_2, "conv4_3")
-        # Build Max Pooling layer
-        self.pool4 = self.max_pool(self.conv4_3, 'pool4')
+        output4_1, kernel4_1, bias4_1 = self.convolution_layer(
+            'conv4_1', output3_4, 512)
+        output4_2, kernel4_2, bias4_2 = self.convolution_layer(
+            'conv4_2', output4_1, 512)
+        output4_3, kernel4_3, bias4_3 = self.convolution_layer(
+            'conv4_3', output4_2, 512)
+        output4_4 = self.max_pooling_layer('pool4', output4_3)
 
         # ___Layer 5___
-        # Build Convolution layer + Relu and load weights
-        self.conv5_1 = self.conv_layer(self.pool4, "conv5_1")
-        # Build Convolution layer + Relu and load weights
-        self.conv5_2 = self.conv_layer(self.conv5_1, "conv5_2")
-        # Build Convolution layer + Relu and load weights
-        self.conv5_3 = self.conv_layer(self.conv5_2, "conv5_3")
-        # Build Max Pooling layer
-        self.pool5 = self.max_pool(self.conv5_3, 'pool5')
+        output5_1, kernel5_1, bias5_1 = self.convolution_layer(
+            'conv5_1', output4_4, 512)
+        output5_2, kernel5_2, bias5_2 = self.convolution_layer(
+            'conv5_2', output5_1, 512)
+        output5_3, kernel5_3, bias5_3 = self.convolution_layer(
+            'conv5_3', output5_2, 512)
+        output5_4 = self.max_pooling_layer('pool5', output5_3)
+
+        # drop out to avoid over fitting
+        if (self.isTraining):
+            output5_4 = tf.nn.dropout(output5_4, keep_prob=self.keep_prob)
 
         # ___Fully Connected Layer 1___
-        self.fc6 = self.fc_layer(self.pool5, "fc6")
-        assert self.fc6.get_shape().as_list()[1:] == [4096]
-        self.relu6 = tf.nn.relu(self.fc6)
+        output6_1, kernel6_1, bias6_1 = self.fully_connection_layer(
+            'fc6_1', output5_4, 4096)
+        # ___Fully Connected Layer 2___
+        output6_2, kernel6_2, bias6_2 = self.fully_connection_layer(
+            'fc6_2', output6_1, 4096)
 
-        # Fully Connected Layer 2___
-        self.fc7 = self.fc_layer(self.relu6, "fc7")
-        self.relu7 = tf.nn.relu(self.fc7)
-
-        # Fully Connected Layer 3___
-        self.fc8 = self.fc_layer(self.relu7, "fc8")
+        # ___Fully Connected Layer 3___
+        output6_3, kernel6_3, bias6_3 = self.fully_connection_layer(
+            'fc6_3', output6_2, self.num_classes)
 
         # Soft Max Layer
-        self.prob = tf.nn.softmax(self.fc8, name="prob")
+        # prob = tf.nn.softmax(output6_3, name="prob")
 
-        self.data_dict = None
         print(('build model finished in:', (time.time() - start_time)))
 
-    def avg_pool(self, bottom, name):
-        """Perform the average pooling on the input.
+        if (self.return_all):
+            return output1_1, kernel1_1, bias1_1,\
+                output1_2, kernel1_2, bias1_2,\
+                output2_1, kernel2_1, bias2_1,\
+                output2_2, kernel2_2, bias2_2,\
+                output3_1, kernel3_1, bias3_1,\
+                output3_2, kernel3_2, bias3_2,\
+                output3_3, kernel3_3, bias3_3,\
+                output4_1, kernel4_1, bias4_1,\
+                output4_2, kernel4_2, bias4_2,\
+                output4_3, kernel4_3, bias4_3,\
+                output5_1, kernel5_1, bias5_1,\
+                output5_2, kernel5_2, bias5_2,\
+                output5_3, kernel5_3, bias5_3,\
+                output6_1, kernel6_1, bias6_1,\
+                output6_2, kernel6_2, bias6_2,\
+                output6_3, kernel6_3, bias6_3
 
-        Parameters
-        ----------
-        bottom : numpy ndarray
-            The input data.
-        name : str
-            Optional name for the operation.
+        else:
+            return output6_3
 
-        Returns
-        -------
-        numpy ndarray
-            The average pooled output tensor.
+    def convolution_layer(self, layer_name, input_maps, num_output_channels,
+                          kernel_size=[3, 3], stride=[1, 1, 1, 1]):
+        num_input_channels = input_maps.get_shape()[-1].value
+        with tf.name_scope(layer_name) as scope:
+            kernel = tf.get_variable(
+                scope+'W', shape=[kernel_size[0], kernel_size[1],
+                                  num_input_channels, num_output_channels],
+                dtype=tf.float32,
+                initializer=tf.contrib.layers.xavier_initializer_conv2d())
+            convolution = tf.nn.conv2d(
+                input_maps, kernel, stride, padding='SAME')
+            bias = tf.Variable(
+                tf.constant(
+                    0.0, shape=[num_output_channels], dtype=tf.float32),
+                trainable=True, name='b')
+            output = tf.nn.relu(tf.nn.bias_add(convolution, bias), name=scope)
+            return output, kernel, bias
 
-        """
-        return tf.nn.avg_pool(bottom, ksize=[1, 2, 2, 1],
-                              strides=[1, 2, 2, 1], padding='SAME',
-                              name=name)
+    # construct a max pooling layer
+    def max_pooling_layer(self, layer_name, input_maps,
+                          kernel_size=[2, 2], stride=[1, 2, 2, 1]):
+        output = tf.nn.max_pool(input_maps,
+                                ksize=[1, kernel_size[0], kernel_size[1], 1],
+                                strides=stride,
+                                padding='SAME',
+                                name=layer_name)
+        return output
 
-    def max_pool(self, bottom, name):
-        """Perform the max pooling on the input.
+    # construct a average pooling layer
 
-        Parameters
-        ----------
-        bottom : numpy ndarray
-            The input data.
-        name : str
-            Optional name for the operation.
+    def avg_pooling_layer(self, layer_name, input_maps,
+                          kernel_size=[2, 2], stride=[1, 2, 2, 1]):
+        output = tf.nn.avg_pool(input_maps,
+                                ksize=[1, kernel_size[0], kernel_size[1], 1],
+                                strides=stride,
+                                padding='SAME',
+                                name=layer_name)
+        return output
 
-        Returns
-        -------
-        numpy ndarray
-            The max pooled output tensor.
+    # construct a fully connection layer
 
-        """
-        return tf.nn.max_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1],
-                              padding='SAME', name=name)
-
-    def conv_layer(self, bottom, name):
-        """Create the Convolutional layer.
-
-        Parameters
-        ----------
-        bottom : numpy ndarray
-            The input data.
-        name : str
-            Optional name for the operation.
-
-        Returns
-        -------
-        numpy ndarray
-            The output tensor of the rectified linear.
-
-        """
-        with tf.variable_scope(name):
-            filt = self.get_conv_filter(name)
-
-            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
-
-            conv_biases = self.get_bias(name)
-            bias = tf.nn.bias_add(conv, conv_biases)
-
-            relu = tf.nn.relu(bias)
-            return relu
-
-    def fc_layer(self, bottom, name):
-        """Create the fully connected layer.
-
-        Parameters
-        ----------
-        bottom : numpy ndarray
-            The input data.
-        name : str
-            Optional name for the operation.
-
-        Returns
-        -------
-        numpy ndarray
-            The result of summing the biases with the values.
-
-        """
-        with tf.variable_scope(name):
-            shape = bottom.get_shape().as_list()
-            dim = 1
-            for d in shape[1:]:
-                dim *= d
-            x = tf.reshape(bottom, [-1, dim])
-
-            weights = self.get_fc_weight(name)
-            biases = self.get_bias(name)
-
-            # Fully connected layer. Note that the '+' operation automatically
-            # broadcasts the biases.
-            fc = tf.nn.bias_add(tf.matmul(x, weights), biases)
-
-            return fc
-
-    def get_conv_filter(self, name):
-        """Create the convolution filter.
-
-        Parameters
-        ----------
-        name : str
-             Optional name for the tensor.
-
-        Returns
-        -------
-        numpy ndarray
-            A Constant Tensor, the filter.
-
-        """
-        return tf.constant(self.data_dict[name][0], name="filter")
-
-    def get_bias(self, name):
-        """Create the bias tensor.
-
-        Parameters
-        ----------
-        name : str
-             Optional name for the tensor.
-
-        Returns
-        -------
-        numpy ndarray
-            A Constant Tensor, the bias ndarray.
-
-        """
-        return tf.constant(self.data_dict[name][1], name="biases")
-
-    def get_fc_weight(self, name):
-        """Create the fully connected layer weights.
-
-        Parameters
-        ----------
-        name : str
-             Optional name for the tensor.
-
-        Returns
-        -------
-        numpy ndarray
-            A Constant Tensor, the weights ndarray.
-
-        """
-        return tf.constant(self.data_dict[name][0], name="weights")
+    def fully_connection_layer(self, layer_name, input_maps, num_output_nodes):
+        shape = input_maps.get_shape()
+        if len(shape) == 4:
+            size = shape[1].value * shape[2].value * shape[3].value
+        else:
+            size = shape[-1].value
+        with tf.name_scope(layer_name) as scope:
+            kernel = tf.get_variable(
+                scope+'W', shape=[size, num_output_nodes],
+                dtype=tf.float32,
+                initializer=tf.contrib.layers.xavier_initializer())
+            bias = tf.Variable(
+                tf.constant(
+                    0.1, shape=[num_output_nodes], dtype=tf.float32),
+                trainable=True, name='b')
+            flat = tf.reshape(input_maps, [-1, size])
+            output = tf.nn.relu(tf.nn.bias_add(tf.matmul(flat, kernel), bias))
+            return output, kernel, bias
