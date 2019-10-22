@@ -5,9 +5,71 @@ from vgg_16 import VGG16
 
 
 class Train:
+    """Train the CNN model.
+
+    Parameters
+    ----------
+    train_x : tf tensor
+        The input training data.
+    train_y : tf tensor
+        The training data classes.
+    valid_x : tensor
+        The validation data.
+    valid_y : tensor
+        The validation data classes.
+    batch_size : int
+        The size of the batch.
+    learning_rate : float
+        The learning rate.
+    num_epochs : int
+        The number of epochs.
+    save_model : bool
+        Whether to save the model or not.
+
+    Attributes
+    ----------
+    format_size : list
+        the image shape.
+    train_x
+    train_y
+    valid_x
+    valid_y
+    batch_size
+    learning_rate
+    num_epochs
+    save_model
+
+    """
+
     def __init__(self, train_x, train_y, valid_x=None, valid_y=None,
-                 batch_size=10, learning_rate=0.01, num_epochs=1,
+                 batch_size=10, learning_rate=0.01, num_epochs=200,
                  save_model=False):
+        """__init__ Constructor.
+
+        Parameters
+        ----------
+        train_x : tf tensor
+            The input training data.
+        train_y : tf tensor
+            The training data classes/labels.
+        valid_x : tensor
+            The validation data.
+        valid_y : tensor
+            The validation data classes.
+        batch_size : int
+            The size of the batch.
+        learning_rate : float
+            The learning rate.
+        num_epochs : int
+            The number of epochs.
+        save_model : bool
+            Whether to save the model or not.
+
+        Returns
+        -------
+        None
+
+        """
         self.train_x = train_x
         self.train_y = train_y
         self.valid_x = valid_x
@@ -19,6 +81,13 @@ class Train:
         self.save_model = save_model
 
     def train_model(self):
+        """Train the model.
+
+        Returns
+        -------
+        None.
+
+        """
         assert len(self.train_x.shape) == 4
         [num_images, img_height, img_width, num_channels] = self.train_x.shape
         num_classes = self.train_y.shape[-1]
@@ -87,10 +156,26 @@ class Train:
 
             # Save the variables to disk
             if self.save_model:
-                save_path = saver.save(session, 'model.tensorflow')
+                # save_path = saver.save(session, 'model.tensorflow')
+                save_path = saver.save(session, 'model.ckpt')
                 print('The model has been saved to ' + save_path)
             session.close()
 
     def accuracy(self, predictions, labels):
+        """Calculate the accuracy.
+
+        Parameters
+        ----------
+        predictions : numpy ndarray
+            An array containing the predictions probabilities.
+        labels : numpy ndarray
+            Description of parameter `labels`.
+
+        Returns
+        -------
+        float
+            The Calculated accuracy.
+
+        """
         return (100.0 * np.sum(np.argmax(predictions, 1) ==
                                np.argmax(labels, 1)) / predictions.shape[0])
