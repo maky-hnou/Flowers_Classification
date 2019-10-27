@@ -63,7 +63,7 @@ class VGG16:
 
         Returns
         -------
-        numpy ndarray
+        tf tensors
             The output of the model.
 
         """
