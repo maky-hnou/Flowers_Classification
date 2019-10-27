@@ -83,7 +83,7 @@ def normalize(image, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
     return normalized_img.astype(np.uint8)
 
 
-def get_folder_names(json_file_path):
+def get_categories_names(json_file_path):
     """Get folder names and indexes from a json file and put them into a dict.
 
     Parameters
@@ -124,7 +124,7 @@ def rename_folders(path, json_file_path):
     None
 
     """
-    names_dict = get_folder_names(json_file_path)
+    names_dict = get_categories_names(json_file_path)
     for key, value in names_dict.items():
         try:
             os.rename(os.path.join(path, key), os.path.join(path, value))
@@ -175,7 +175,7 @@ def label_images(filename, path, json_file_path):
         The label of the given image.
 
     """
-    categories_dict = get_folder_names(json_file_path)
+    categories_dict = get_categories_names(json_file_path)
     classes_number = len(glob.glob(path + '/*'))
     class_labels = np.identity(classes_number, dtype=int)
     class_label = list(categories_dict.keys())[
