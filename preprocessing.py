@@ -24,10 +24,10 @@ if (__name__ == '__main__'):
                 continue
 
         # Rename folders
-        rename_folders(folder, 'cat_to_name.json')
+        rename_folders(folder, 'categories_names.json')
         # Rename data/files
         rename_files(folder)
 
         # Convert data/files to numpy array
         image_to_npy(folder.split('/')[-2], folder,
-                     (224, 224), 'cat_to_name.json')
+                     (224, 224), 'categories_names.json')
