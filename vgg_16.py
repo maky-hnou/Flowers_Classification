@@ -1,7 +1,7 @@
 """Build the VGG16 CNN."""
 import time
 
-import TensorFlow as tf
+import tensorflow as tf
 
 
 class VGG16:
@@ -145,7 +145,10 @@ class VGG16:
             'fc6_3', output6_2, self.num_classes)
 
         # Soft Max Layer
-        # prob = tf.nn.softmax(output6_3, name="prob")
+        prob = tf.nn.softmax(output6_3, name="prob")
+        print('#' * 32)
+        print('softmax:', output6_3)
+        print('#' * 32)
 
         print(('build model finished in:', (time.time() - start_time)))
 
@@ -168,7 +171,8 @@ class VGG16:
                 output6_3, kernel6_3, bias6_3
 
         else:
-            return output6_3
+            # return output6_3
+            return list(prob)
 
     # construct a Convolutional Layer
     def convolution_layer(self, layer_name, input_maps, num_output_channels,

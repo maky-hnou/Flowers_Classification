@@ -17,7 +17,7 @@ def load_data(path):
         The data and its labels.
 
     """
-    data = np.load(path)
+    data = np.load(path, allow_pickle=True)
     images = np.array([i[0] for i in data])
     labels = np.array([i[1] for i in data])
     return images, labels
@@ -25,7 +25,7 @@ def load_data(path):
 
 if (__name__ == '__main__'):
     train_data_path = 'train_data_gray.npy'
-    valid_data_path = ''
+    valid_data_path = 'valid_data_gray.npy'
     print('Loading dataset ...')
     train_imgs, train_labels = load_data(train_data_path)
     valid_imgs, valid_labels = load_data(valid_data_path)

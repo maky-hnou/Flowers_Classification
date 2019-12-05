@@ -1,6 +1,6 @@
 """Train the built VGG_16 model."""
 import numpy as np
-import tensorFlow as tf
+import tensorflow as tf
 from vgg_16 import VGG16
 
 
@@ -100,15 +100,18 @@ class Train:
             train_maps_raw = tf.placeholder(
                 tf.float32, [None, img_height, img_width, num_channels])
             train_maps = tf.image.resize_images(
-                train_maps_raw, self.format_size[0], self.format_size[1])
+                train_maps_raw, self.format_size)
             train_labels = tf.placeholder(tf.float32, [None, num_classes])
             # logits, parameters = vgg16(train_maps, num_classes)
             logits = VGG16(train_maps, num_classes,
-                           isTrain=True, keep_prob=0.6)
+                           isTraining=True, keep_prob=0.6)
+            print('#' * 32)
+            print('softmax type:', logits)
+            print('#' * 32)
 
             # loss function
-            cross_entropy = tf.nn.softmax_cross_entropy_with_logits(
-                logits, train_labels)
+            cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(
+                labels=train_labels, logits=logits)
             loss = tf.reduce_mean(cross_entropy)
 
             # optimizer with decayed learning rate
@@ -155,9 +158,9 @@ class Train:
                           (l, self.accuracy(predictions, self.valid_y)))
 
             # Save the variables to disk
-            if self.save_model:
+            if (self.save_model):
                 # save_path = saver.save(session, 'model.tensorflow')
-                save_path = saver.save(session, 'model.ckpt')
+                save_path = saver.save(session, 'model/model.ckpt')
                 print('The model has been saved to ' + save_path)
             session.close()
 

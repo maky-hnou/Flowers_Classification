@@ -11,8 +11,7 @@ if (__name__ == '__main__'):
     data_folders = ['flower_data/train/',
                     'flower_data/test/', 'flower_data/valid/']
     for folder in data_folders:
-        for image in natsorted(glob.glob(folder + '**/*'),
-                               alg=ns.IGNORECASE):
+        for image in natsorted(glob.glob(folder + '**/*'), alg=ns.IGNORECASE):
             try:
                 img = cv2.imread(image)
                 rotated_img = random_rotation(img)
