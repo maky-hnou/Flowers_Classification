@@ -146,9 +146,6 @@ class VGG16:
 
         # Soft Max Layer
         prob = tf.nn.softmax(output6_3, name="prob")
-        print('#' * 32)
-        print('softmax:', output6_3)
-        print('#' * 32)
 
         print(('build model finished in:', (time.time() - start_time)))
 
@@ -172,7 +169,7 @@ class VGG16:
 
         else:
             # return output6_3
-            return list(prob)
+            return prob
 
     # construct a Convolutional Layer
     def convolution_layer(self, layer_name, input_maps, num_output_channels,
