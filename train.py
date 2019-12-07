@@ -103,12 +103,9 @@ class Train:
                 train_maps_raw, self.format_size)
             train_labels = tf.placeholder(tf.float32, [None, num_classes])
             # logits, parameters = vgg16(train_maps, num_classes)
-            logits = VGG16(train_maps, num_classes,
-                           isTraining=True, keep_prob=0.6)
-            print('#' * 32)
-            print('softmax type:', logits)
-            print('#' * 32)
-
+            vgg = VGG16(input_shape=train_maps, num_classes=num_classes,
+                        isTraining=True, keep_prob=0.6)
+            logits = vgg.build_model()
             # loss function
             cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(
                 labels=train_labels, logits=logits)
