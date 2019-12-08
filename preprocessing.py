@@ -28,5 +28,5 @@ if (__name__ == '__main__'):
         rename_files(folder)
 
         # Convert data/files to numpy array
-        image_to_npy(folder.split('/')[-2], folder,
-                     (224, 224), 'categories_names.json')
+        # image_to_npy(folder.split('/')[-2], folder,
+        #              (224, 224), 'categories_names.json')
