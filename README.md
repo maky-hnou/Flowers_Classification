@@ -15,5 +15,26 @@ In this repo, I used TensorFlow to build VGG16 and train it from scratch using t
 - **train.py:** the code used train the model.
 - **utils.py:** a python file containing utils functions.
 - **vgg_16.py:** the coded used to build VGG16.
-- **requirements.txt:** a text file containing the needed packages to run the project (if you want to use GPU instead of CPU, change tensorflow to tensorflow-gpu in requirements.txt).
+- **requirements.txt:** a text file containing the needed packages to run the project (if you want to use GPU instead of CPU, change tensorflow to tensorflow-gpu in requirements.txt).  
+
+
+## Train and test the model:  
+
+**1. Prepare the environment:**  
+*NB: Use python 3+ only.*  
+Before anything, please install the requirements by running: `pip install -r requirements.txt`.  
+
+**2. Prepare the data:**  
+Download the *102 Category Flower Dataset* available via this [link](https://www.robots.ox.ac.uk/~vgg/data/flowers/102/index.html).  
+Extract all the files into a `flower_data/` directory.  
+The extracted data into `flower_data/` should be organized as follows:  
+`flower_data/` should contain three folders named `train/`, `test/` and `valid/`.  
+*Optional:* you can convert all the dataset into npy file by uncommenting [lines 33 and 34](https://github.com/maky-hnou/Flowers_Classification/blob/4a20e5a91cc880e6e573513c829d77d1313f8817/preprocessing.py#L31) of `preprocessing.py`.
+
+**3. Train the VGG16 model:** (*from scratch*)   
+To train the model, run `python run_training.py`.   
+The trained model will be saved to a directory named `model/`.  
+
+**4. Test the model:**
+
 
