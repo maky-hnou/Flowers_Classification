@@ -1,4 +1,6 @@
 """Train the CNN."""
+import os
+
 import numpy as np
 from train import Train
 
@@ -29,6 +31,8 @@ if (__name__ == '__main__'):
     print('Loading dataset ...')
     train_imgs, train_labels = load_data(train_data_path)
     valid_imgs, valid_labels = load_data(valid_data_path)
+    if (not os.path.exists('model/')):
+        os.makedirs('model/')
     train = Train(train_x=train_imgs, train_y=train_labels,
                   valid_x=valid_imgs, valid_y=valid_labels, batch_size=10,
                   learning_rate=0.01, num_epochs=200, save_model=True)
