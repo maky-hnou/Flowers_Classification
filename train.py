@@ -157,7 +157,7 @@ class Train:
             # Save the variables to disk
             if (self.save_model):
                 # save_path = saver.save(session, 'model.tensorflow')
-                save_path = saver.save(session, 'model/model.ckpt')
+                save_path = saver.save(session, 'model/VGG16_modelParams.ckpt')
                 print('The model has been saved to ' + save_path)
             session.close()
 
