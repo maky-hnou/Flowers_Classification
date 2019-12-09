@@ -10,8 +10,10 @@ class Test:
 
     Parameters
     ----------
-    image : numpy ndarray
-        The input image to be classified.
+    image : str
+        The path of the image to be classified.
+    graph_path: str
+        The path of the saved model.
 
     Attributes
     ----------
@@ -23,7 +25,7 @@ class Test:
 
     """
 
-    def __init__(self, image):
+    def __init__(self, image, graph_path):
         """__init__ Constructor.
 
         Parameters
@@ -39,6 +41,7 @@ class Test:
         self.image = image
         self.graph = tf.Grapgh()
         self.json_file_path = 'categories_names.json'
+        self.graph_path = graph_path
 
     def load_image(self):
         """Load the input image.
@@ -95,11 +98,14 @@ class Test:
         with tf.Session(graph=self.graph) as sess:
             saver = tf.train.Saver()
             print('Restoring VGG16 model parameters ...')
-            saver.restore(sess, 'VGG16_modelParams.ckpt')
+            saver.restore(sess, self.graph_path)
             output, values, indices, input_maps, k = self.build_graph()
-            # testing on the sample image
+            # Load the image
+            image = self.load_image(self.image)
+
+            # Testing on the sample image
             [prob, ind, out] = sess.run([values, indices, output],
-                                        feed_dict={input_maps: [self.image]})
+                                        feed_dict={input_maps: [image]})
             prob = prob[0]
             ind = ind[0]
             class_names = get_categories_names(self.json_file_path)
