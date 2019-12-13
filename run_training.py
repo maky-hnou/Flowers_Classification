@@ -34,6 +34,6 @@ if (__name__ == '__main__'):
     if (not os.path.exists('model/')):
         os.makedirs('model/')
     train = Train(train_x=train_imgs, train_y=train_labels,
-                  valid_x=valid_imgs, valid_y=valid_labels, batch_size=10,
+                  valid_x=valid_imgs, valid_y=valid_labels, batch_size=2,
                   learning_rate=0.01, num_epochs=200, save_model=True)
     train.train_model()

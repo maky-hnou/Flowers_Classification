@@ -93,6 +93,7 @@ class Train:
         num_classes = self.train_y.shape[-1]
         num_steps = int(np.ceil(num_images / float(self.batch_size)))
 
+        tf.reset_default_graph()
         # build the graph and define objective function
         graph = tf.Graph()
         with graph.as_default():
@@ -122,8 +123,11 @@ class Train:
             # prediction for the training data
             train_prediction = tf.nn.softmax(logits)
 
+        # Set configs
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
         # train the graph
-        with tf.Session(graph=graph) as session:
+        with tf.Session(graph=graph, config=config) as session:
             # saver to save the trained model
             saver = tf.train.Saver()
             session.run(tf.initialize_all_variables())
