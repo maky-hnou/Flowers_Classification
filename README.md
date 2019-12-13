@@ -15,7 +15,7 @@ In this repo, I used TensorFlow to build VGG16 and train it from scratch using t
 - **train.py:** the code used train the model.
 - **utils.py:** a python file containing utils functions.
 - **vgg_16.py:** the coded used to build VGG16.
-- **requirements.txt:** a text file containing the needed packages to run the project (if you want to use GPU instead of CPU, change tensorflow to tensorflow-gpu in requirements.txt).  
+- **requirements.txt:** a text file containing the needed packages to run the project.  
 
 
 ## Train and test the model:  
@@ -37,5 +37,3 @@ The trained model will be saved to a directory named `model/`.
 
 **4. Test the model:**  
 To test your trained model, run `python run_testing.py`. Don't forget to change the image's and the model's paths.
-
-
