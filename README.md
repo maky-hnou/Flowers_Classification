@@ -35,6 +35,7 @@ The extracted data into `flower_data/` should be organized as follows:
 To train the model, run `python run_training.py`.   
 The trained model will be saved to a directory named `model/`.  
 
-**4. Test the model:**
+**4. Test the model:**  
+To test your trained model, run `python run_testing.py`. Don't forget to change the image's and the model's paths.
 
 
