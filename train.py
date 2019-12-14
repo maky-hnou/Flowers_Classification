@@ -150,13 +150,13 @@ class Train:
                 print('Epoch %2d/%2d:\n\tTrain Loss = %.2f\t Accuracy = %.2f%%'
                       % (epoch+1, self.num_epochs, l,
                          self.accuracy(predictions, batch_labels)))
-                if self.valid_x is not None and self.valid_y is not None:
-                    feed_dict = {train_maps_raw: self.valid_x,
-                                 train_labels: self.valid_y}
-                    l, predictions = session.run(
-                        [loss, train_prediction], feed_dict=feed_dict)
-                    print('\tValid Loss = %.2f\t Accuracy = %.2f%%' %
-                          (l, self.accuracy(predictions, self.valid_y)))
+                # if self.valid_x is not None and self.valid_y is not None:
+                #     feed_dict = {train_maps_raw: self.valid_x,
+                #                  train_labels: self.valid_y}
+                #     l, predictions = session.run(
+                #         [loss, train_prediction], feed_dict=feed_dict)
+                #     print('\tValid Loss = %.2f\t Accuracy = %.2f%%' %
+                #           (l, self.accuracy(predictions, self.valid_y)))
 
             # Save the variables to disk
             if (self.save_model):
