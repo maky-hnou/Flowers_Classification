@@ -1,4 +1,10 @@
 # Flowers_Classification  
+![Python version][python-version]
+[![GitHub issues][issues-image]][issues-url]
+[![GitHub forks][fork-image]][fork-url]
+[![GitHub Stars][stars-image]][stars-url]
+[![License][license-image]][license-url]
+
 Flower Species Classifier using TensorFlow.  
 
 
@@ -37,3 +43,13 @@ The trained model will be saved to a directory named `model/`.
 
 **4. Test the model:**  
 To test your trained model, run `python run_testing.py`. Don't forget to change the image's and the model's paths.
+
+[python-version]:https://img.shields.io/badge/python-3.6+-brightgreen.svg
+[issues-image]:https://img.shields.io/github/issues/maky-hnou/Flowers_Classification.svg
+[issues-url]:https://img.shields.io/github/issues/maky-hnou/Flowers_Classification
+[fork-image]:https://img.shields.io/github/forks/maky-hnou/Flowers_Classification.svg
+[fork-url]:https://img.shields.io/github/forks/maky-hnou/Flowers_Classification
+[stars-image]:https://img.shields.io/github/stars/maky-hnou/Flowers_Classification.svg
+[stars-url]:https://github.com/maky-hnou/Flowers_Classification/stargazers
+[license-image]:https://img.shields.io/github/license/maky-hnou/Flowers_Classification.svg
+[license-url]:https://github.com/maky-hnou/Flowers_Classification/blob/master/LICENSE
