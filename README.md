@@ -46,9 +46,9 @@ To test your trained model, run `python run_testing.py`. Don't forget to change 
 
 [python-version]:https://img.shields.io/badge/python-3.6+-brightgreen.svg
 [issues-image]:https://img.shields.io/github/issues/maky-hnou/Flowers_Classification.svg
-[issues-url]:https://img.shields.io/github/issues/maky-hnou/Flowers_Classification
+[issues-url]:https://github.com/maky-hnou/Flowers_Classification/issues
 [fork-image]:https://img.shields.io/github/forks/maky-hnou/Flowers_Classification.svg
-[fork-url]:https://img.shields.io/github/forks/maky-hnou/Flowers_Classification
+[fork-url]:https://github.com/maky-hnou/Flowers_Classification/network/members
 [stars-image]:https://img.shields.io/github/stars/maky-hnou/Flowers_Classification.svg
 [stars-url]:https://github.com/maky-hnou/Flowers_Classification/stargazers
 [license-image]:https://img.shields.io/github/license/maky-hnou/Flowers_Classification.svg
